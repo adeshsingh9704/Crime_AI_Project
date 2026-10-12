@@ -1,0 +1,4 @@
+fake_id,name,crime,ipc_section,verdict,face_id
+C001,Rahul,Theft,379,Guilty,face_001.jpg
+C002,Riya,Robbery,392,Guilty,face_002.jpg
+C003,Vikram,Fraud,420,Not Guilty,face_003.jpg

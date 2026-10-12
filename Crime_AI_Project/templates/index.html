@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Crime AI Dashboard</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Your existing CSS -->
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- ================================================= -->
+<!-- HEADER -->
+<!-- ================================================= -->
+
+<header class="topbar">
+
+    <div>
+
+        <h1>Crime AI</h1>
+
+        <p>
+            Crime Hotspot & Location Intelligence Dashboard
+        </p>
+
+    </div>
+
+
+    <div class="status">
+
+        ● System Online
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+
+    <!-- ================================================= -->
+    <!-- STATISTICS -->
+    <!-- ================================================= -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Incidents
+            </span>
+
+            <strong id="totalIncidents">
+                -
+            </strong>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Detected Hotspots
+            </span>
+
+            <strong id="totalHotspots">
+                -
+            </strong>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Current Risk
+            </span>
+
+            <strong id="currentRisk">
+                Unknown
+            </strong>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Nearest Hotspot
+            </span>
+
+            <strong id="nearestDistance">
+                -
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- LIVE MAP -->
+    <!-- ================================================= -->
+
+    <section class="panel">
+
+
+        <div class="panel-header">
+
+
+            <div>
+
+                <h2>
+                    Live Location & Crime Hotspots
+                </h2>
+
+                <p>
+                    Browser GPS + historical hotspot data
+                </p>
+
+            </div>
+
+
+            <button
+                class="primary-btn"
+                onclick="startTracking()"
+            >
+                Start Live Location
+            </button>
+
+
+        </div>
+
+
+
+        <div id="map"></div>
+
+
+
+        <div
+            id="locationResult"
+            class="result-box"
+        >
+            Location has not been checked.
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- PREDICTION + HOTSPOTS -->
+    <!-- ================================================= -->
+
+    <section class="two-column">
+
+
+        <!-- CRIME PREDICTION -->
+
+        <div class="panel">
+
+
+            <h2>
+                Crime Prediction
+            </h2>
+
+
+            <p>
+                Demonstration prediction based on
+                the available historical location data.
+            </p>
+
+
+            <button
+                class="primary-btn"
+                onclick="predictCurrentLocation()"
+            >
+                Predict Crime Category
+            </button>
+
+
+            <div
+                id="predictionResult"
+                class="result-box"
+            >
+                Waiting for location...
+            </div>
+
+
+        </div>
+
+
+
+        <!-- HOTSPOT LIST -->
+
+        <div class="panel">
+
+
+            <h2>
+                Detected Hotspots
+            </h2>
+
+
+            <div id="hotspotList">
+
+                Loading hotspots...
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- CRIME DISTRIBUTION -->
+    <!-- ================================================= -->
+
+    <section class="panel">
+
+
+        <h2>
+            Crime Distribution
+        </h2>
+
+
+        <div id="crimeDistribution"></div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- IMAGE VERIFICATION -->
+    <!-- ================================================= -->
+
+    <section class="panel">
+
+
+        <h2>
+            Image Verification Demo
+        </h2>
+
+
+        <p class="warning">
+
+            This feature compares an uploaded image with
+            the supplied demo image dataset. A visual
+            similarity result does not establish identity.
+
+        </p>
+
+
+
+        <input
+            type="file"
+            id="imageFile"
+            accept="image/*"
+        >
+
+
+
+        <br><br>
+
+
+
+        <button
+            class="primary-btn"
+            onclick="scanImage()"
+        >
+            Compare Image
+        </button>
+
+
+
+        <div
+            id="faceResult"
+            class="result-box"
+        >
+            No image selected.
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- LEGAL AI -->
+    <!-- ================================================= -->
+
+    <section class="panel">
+
+
+        <h2>
+            Legal Case Similarity
+        </h2>
+
+
+        <p>
+            Enter a short description of the case.
+        </p>
+
+
+
+        <textarea
+            id="caseText"
+            rows="5"
+            placeholder="Example: mobile phone theft case..."
+        ></textarea>
+
+
+
+        <br><br>
+
+
+
+        <button
+            class="primary-btn"
+            onclick="getLegalHelp()"
+        >
+            Find Similar Legal Case
+        </button>
+
+
+
+        <div
+            id="legalResult"
+            class="result-box"
+        >
+            No query submitted.
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- REPORT -->
+    <!-- ================================================= -->
+
+    <section class="panel report-panel">
+
+
+        <h2>
+            Project Report
+        </h2>
+
+
+        <p>
+            Generate the latest Crime AI project report
+            using the current dataset.
+        </p>
+
+
+
+        <a href="/pdf">
+
+            <button class="download-btn">
+
+                Download PDF Report
+
+            </button>
+
+        </a>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+
+<footer>
+
+
+    <p>
+        Crime AI — Academic Demonstration Project
+    </p>
+
+
+    <p>
+        Historical/demo data only. Not for operational
+        law-enforcement decisions.
+    </p>
+
+
+</footer>
+
+
+
+<!-- ================================================= -->
+<!-- LEAFLET JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
+
+<!-- ================================================= -->
+<!-- YOUR ORIGINAL DASHBOARD JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script src="/static/script.js"></script>
+
+
+
+<!-- ================================================= -->
+<!-- IMAGE VERIFICATION JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script>
+
+async function scanImage() {
+
+
+    // Get selected image
+    const fileInput =
+        document.getElementById("imageFile");
+
+
+    // Get result box
+    const resultBox =
+        document.getElementById("faceResult");
+
+
+
+    // ================================================
+    // CHECK IMAGE
+    // ================================================
+
+    if (
+        !fileInput.files ||
+        fileInput.files.length === 0
+    ) {
+
+        resultBox.innerHTML = `
+
+            <h3>
+                Image Required
+            </h3>
+
+            <p>
+                Please select an image first.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    // Get file
+    const file = fileInput.files[0];
+
+
+
+    // ================================================
+    // CREATE FORM DATA
+    // ================================================
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "file",
+        file
+    );
+
+
+
+    // ================================================
+    // LOADING MESSAGE
+    // ================================================
+
+    resultBox.innerHTML = `
+
+        <h3>
+            Checking Image...
+        </h3>
+
+        <p>
+            Please wait while the image is being compared
+            with the demo dataset.
+        </p>
+
+    `;
+
+
+
+    try {
+
+
+        // ============================================
+        // SEND IMAGE TO FLASK
+        // ============================================
+
+        const response =
+            await fetch(
+                "/scan",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+
+        // Convert response to JSON
+        const data =
+            await response.json();
+
+
+
+        // ============================================
+        // ERROR
+        // ============================================
+
+        if (
+            !response.ok ||
+            data.status === "ERROR"
+        ) {
+
+            resultBox.innerHTML = `
+
+                <h3>
+                    Image Verification Error
+                </h3>
+
+                <p>
+                    ${
+                        data.message ||
+                        "Unable to process the image."
+                    }
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+
+        // ============================================
+        // MATCH FOUND
+        // ============================================
+
+        if (
+            data.status === "MATCH_FOUND"
+        ) {
+
+
+            resultBox.innerHTML = `
+
+                <h3>
+                    ✓ Similar Demo Record Found
+                </h3>
+
+
+                <p class="warning">
+
+                    ${
+                        data.message ||
+                        "This result does not establish identity."
+                    }
+
+                </p>
+
+
+                <hr>
+
+
+                <h3>
+                    Criminal Record Details
+                </h3>
+
+
+
+                <p>
+
+                    <strong>
+                        Fake ID:
+                    </strong>
+
+                    ${
+                        data.fake_id ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Name:
+                    </strong>
+
+                    ${
+                        data.name ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Crime:
+                    </strong>
+
+                    ${
+                        data.crime ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        IPC Section:
+                    </strong>
+
+                    ${
+                        data.ipc_section ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Verdict:
+                    </strong>
+
+                    ${
+                        data.verdict ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Reference Image:
+                    </strong>
+
+                    ${
+                        data.reference_id ||
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <p>
+
+                    <strong>
+                        Image Difference Score:
+                    </strong>
+
+                    ${
+                        data.similarity_score ??
+                        "N/A"
+                    }
+
+                </p>
+
+
+
+                <hr>
+
+
+
+                <p class="warning">
+
+                    <strong>
+                        Demo Notice:
+                    </strong>
+
+                    This record is associated with the
+                    closest matching demo image. It is
+                    not proof of identity, criminal
+                    activity, or guilt.
+
+                </p>
+
+            `;
+
+
+            return;
+
+        }
+
+
+
+        // ============================================
+        // NO MATCH
+        // ============================================
+
+        if (
+            data.status === "NO_MATCH"
+        ) {
+
+
+            resultBox.innerHTML = `
+
+                <h3>
+                    ✕ No Sufficient Match Found
+                </h3>
+
+
+                <p>
+
+                    ${
+                        data.message ||
+                        "No sufficiently similar image was found."
+                    }
+
+                </p>
+
+
+
+                ${
+                    data.reference_id
+                    ?
+
+                    `
+
+                        <p>
+
+                            <strong>
+                                Closest Reference:
+                            </strong>
+
+                            ${
+                                data.reference_id
+                            }
+
+                        </p>
+
+                    `
+
+                    :
+
+                    ""
+                }
+
+
+
+                ${
+                    data.similarity_score !== undefined
+                    ?
+
+                    `
+
+                        <p>
+
+                            <strong>
+                                Difference Score:
+                            </strong>
+
+                            ${
+                                data.similarity_score
+                            }
+
+                        </p>
+
+                    `
+
+                    :
+
+                    ""
+                }
+
+            `;
+
+
+            return;
+
+        }
+
+
+
+        // ============================================
+        // OTHER RESPONSE
+        // ============================================
+
+        resultBox.innerHTML = `
+
+            <h3>
+                Image Verification Result
+            </h3>
+
+
+            <p>
+
+                ${
+                    data.message ||
+                    "Result received."
+                }
+
+            </p>
+
+
+            ${
+                data.reference_id
+                ?
+
+                `
+
+                    <p>
+
+                        <strong>
+                            Reference Image:
+                        </strong>
+
+                        ${
+                            data.reference_id
+                        }
+
+                    </p>
+
+                `
+
+                :
+
+                ""
+            }
+
+
+            ${
+                data.similarity_score !== undefined
+                ?
+
+                `
+
+                    <p>
+
+                        <strong>
+                            Difference Score:
+                        </strong>
+
+                        ${
+                            data.similarity_score
+                        }
+
+                    </p>
+
+                `
+
+                :
+
+                ""
+            }
+
+        `;
+
+    }
+
+
+
+    // ================================================
+    // CONNECTION ERROR
+    // ================================================
+
+    catch (error) {
+
+
+        console.error(
+            "Image scan error:",
+            error
+        );
+
+
+        resultBox.innerHTML = `
+
+            <h3>
+                Connection Error
+            </h3>
+
+
+            <p>
+                Could not connect to the Crime AI server.
+            </p>
+
+
+            <p>
+                Make sure Flask is running.
+            </p>
+
+        `;
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
